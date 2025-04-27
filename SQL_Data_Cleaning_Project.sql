@@ -2,7 +2,7 @@
 -- 1. Remove Duplicates
 -- 2. Standardize The Data
 -- 3. Remove NULL Values
--- 4. remove any columns
+-- 4. Remove any Columns
 
 
 SELECT* FROM layoffs;
@@ -14,12 +14,14 @@ SELECT* FROM layoffs;
 
 SELECT * FROM layoffs_staging;
 
-SELECT * ,
+-------------- Remove the Duplicates ----------------
+
+SELECT * ,                 ---Used Window() function to partition by each column and row_number() to assign number to identify duplicates.
 ROW_NUMBER() 
 OVER(PARTITION BY company,location,industry,total_laid_off,percentage_laid_off,`date`,stage,country,funds_raised_millions) AS row_num
 FROM layoffs_staging;
 
-WITH duplicate_CTE AS
+WITH duplicate_CTE AS      ---Used a CTE to apply filter on the row_num column and enhance readability
 (
 SELECT * ,
 ROW_NUMBER() 
@@ -61,7 +63,7 @@ FROM layoffs_staging2
 WHERE row_num>1;
 
 
-------- Standardizing The Data -------
+------------- Standardizing The Data --------------
 
 SELECT company,TRIM(company)
 FROM layoffs_staging2;
@@ -117,7 +119,7 @@ ALTER TABLE layoffs_staging2
 MODIFY COLUMN `date` DATE;
 
 
------ Remove NULL values -----
+--------------- Remove NULL values ------------------
 
 SELECT* FROM layoffs_staging2
 WHERE total_laid_off  IS NULL
@@ -168,11 +170,13 @@ AND percentage_laid_off IS NULL;
 SELECT*
 FROM layoffs_staging2;
 
+---------- Remove unnecessary columns ------------
+
 ALTER TABLE layoffs_staging2
 DROP COLUMN row_num;
 
 
-SELECT*
+SELECT*                ----- Cleaned Dataset -----
 FROM layoffs_staging2;
 
 
