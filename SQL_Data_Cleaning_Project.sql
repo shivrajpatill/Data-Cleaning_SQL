@@ -1,8 +1,8 @@
---- Data Cleaning ---
+--- Cleaning Data in SQL Queries ---
 -- 1. Remove Duplicates
 -- 2. Standardize The Data
 -- 3. Remove NULL Values
--- 4. Remove any Columns
+-- 4. Remove Unused Columns
 
 
 SELECT* FROM layoffs;
@@ -33,7 +33,7 @@ FROM duplicate_CTE
 WHERE row_num>1;
 
 
-CREATE TABLE `layoffs_staging2` (
+CREATE TABLE `layoffs_staging2` (    ---- Created another table with row_num column 
   `company` text,
   `location` text,
   `industry` text,
@@ -58,7 +58,7 @@ FROM layoffs_staging2
 WHERE row_num>1;
 
 
-delete
+delete                 ----- Deleted the duplicated rows
 FROM layoffs_staging2
 WHERE row_num>1;
 
@@ -107,7 +107,7 @@ FROM layoffs_staging2
 ORDER BY 1;
 
 
-UPDATE layoffs_staging2
+UPDATE layoffs_staging2       ----- Updated Date column from text to date format using STR_TO_DATE()
 SET `date` = STR_TO_DATE(`date`,'%m/%d/%Y');
 
 SELECT `date`
@@ -170,7 +170,7 @@ AND percentage_laid_off IS NULL;
 SELECT*
 FROM layoffs_staging2;
 
----------- Remove unnecessary columns ------------
+---------- Delete Unused columns ------------
 
 ALTER TABLE layoffs_staging2
 DROP COLUMN row_num;
